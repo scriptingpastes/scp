@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Springfield Communist Party — Cash Back to All Traders</title>
+    <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994917475a7e463fe000ddd_content.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #080806;
+            --bg-secondary: #0e0e0a;
+            --bg-card: #14140e;
+            --bg-card-hover: #1c1c14;
+            --border: #2a2a1a;
+            --border-bright: #3a3a28;
+            --text-primary: #f0ece0;
+            --text-secondary: #9a9580;
+            --text-muted: #6a6550;
+            --accent: #FED41D;
+            --accent-dim: #d4b218;
+            --accent-glow: rgba(254, 212, 29, 0.1);
+            --accent-glow-strong: rgba(254, 212, 29, 0.25);
+            --yellow: #FED41D;
+            --yellow-glow: rgba(254, 212, 29, 0.15);
+            --gold: #FFD700;
+            --accent2: #70D1FE;
+            --accent3: #ff4444;
+            --cyan: #70D1FE;
+            --red: #ff4444;
+            --red-glow: rgba(255, 68, 68, 0.15);
+            --font-sans: 'Space Grotesk', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        ::selection { background: var(--accent); color: var(--bg-primary); }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ── Grid BG ── */
+        .grid-bg {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(254,212,29,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(254,212,29,0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none; z-index: 0;
+        }
+
+        .glow-orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(120px); pointer-events: none; z-index: 0;
+        }
+        .glow-orb.red { width: 600px; height: 600px; top: -200px; left: -200px; background: rgba(254,212,29,0.06); }
+        .glow-orb.yellow { width: 500px; height: 500px; bottom: -150px; right: -150px; background: rgba(112,209,254,0.04); }
+        .glow-orb.orange { width: 400px; height: 400px; top: 40%; left: 50%; background: rgba(255,68,68,0.03); }
+
+        .content-wrapper { position: relative; z-index: 1; }
+
+        /* ── SICKLE RINGS ── */
+        .loop-rings {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 800px; height: 800px; pointer-events: none; z-index: 0; opacity: 0.025;
+        }
+        .loop-ring {
+            position: absolute; border: 1px solid var(--accent);
+            border-radius: 50%; top: 50%; left: 50%;
+        }
+        .loop-ring:nth-child(1) { width: 300px; height: 300px; margin: -150px 0 0 -150px; animation: spin 25s linear infinite; }
+        .loop-ring:nth-child(2) { width: 500px; height: 500px; margin: -250px 0 0 -250px; animation: spin 35s linear infinite reverse; border-color: var(--cyan); }
+        .loop-ring:nth-child(3) { width: 700px; height: 700px; margin: -350px 0 0 -350px; animation: spin 45s linear infinite; border-color: var(--red); }
+        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+        /* ── SOCIAL BAR ── */
+        .social-bar {
+            position: fixed; left: 1.2rem; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 0.75rem;
+            z-index: 90; opacity: 0; animation: fadeUp .8s ease forwards 1.3s;
+        }
+        .social-btn {
+            width: 40px; height: 40px; border-radius: 8px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; cursor: pointer; overflow: hidden; text-decoration: none; position: relative;
+        }
+        .social-btn:hover {
+            border-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow);
+            transform: scale(1.12); text-decoration: none;
+        }
+        .social-btn img { width: 22px; height: 22px; object-fit: contain; border-radius: 4px; filter: brightness(0.85); transition: filter 0.3s; }
+        .social-btn:hover img { filter: brightness(1.1); }
+        .social-btn .social-tooltip {
+            position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+            padding: 0.3rem 0.65rem; font-family: var(--font-mono); font-size: 0.65rem;
+            color: var(--accent); white-space: nowrap; pointer-events: none;
+            opacity: 0; transition: opacity 0.2s, left 0.2s;
+        }
+        .social-btn:hover .social-tooltip { opacity: 1; left: 56px; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5,5,10,0.92);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+        .nav-logo { font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+        .nav-logo img { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--accent); }
+        .nav-logo .party { color: var(--cyan); }
+        .nav-logo span.dim { color: var(--text-muted); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a {
+            color: var(--text-secondary); font-size: 0.8rem; font-weight: 500;
+            letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent); text-decoration: none; }
+        .nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+        .status-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(254,212,29,0.5)} 50%{box-shadow:0 0 0 8px rgba(254,212,29,0)} }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 8rem 2rem 4rem; position: relative;
+        }
+        .hero-tag {
+            font-family: var(--font-mono); font-size: 0.75rem;
+            color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 1.5rem; opacity:0; animation: fadeUp .8s ease forwards .2s;
+        }
+        .hero-tag .blink { animation: blink 1s step-end infinite; }
+        @keyframes blink { 50%{opacity:0} }
+
+        .hero-pfp {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 40px var(--accent-glow-strong), 0 0 80px var(--accent-glow);
+            margin-bottom: 2rem; object-fit: cover;
+            opacity:0; animation: fadeUp .8s ease forwards .1s;
+        }
+
+        .hero-logo {
+            max-width: 650px; width: 85%; margin-bottom: 0.5rem;
+            filter: drop-shadow(0 0 30px rgba(255,68,68,0.15));
+            opacity:0; animation: fadeUp .8s ease forwards .4s;
+        }
+
+        .hero-subtitle-text {
+            font-family: var(--font-mono); font-size: 0.85rem;
+            color: var(--cyan); letter-spacing: 0.2em; text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity:0; animation: fadeUp .8s ease forwards .5s;
+        }
+
+        .hero-desc {
+            font-size: clamp(1rem,2.5vw,1.2rem); color: var(--text-secondary);
+            max-width: 600px; margin-bottom: 2.5rem;
+            opacity:0; animation: fadeUp .8s ease forwards .6s;
+        }
+        .hero-desc strong { color: var(--text-primary); font-weight: 600; }
+
+        .hero-cta-row {
+            display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;
+            opacity:0; animation: fadeUp .8s ease forwards .7s;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            padding: 0.9rem 2.2rem; background: var(--accent); color: var(--bg-primary);
+            font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem;
+            border-radius: 8px; border: none; cursor: pointer;
+            transition: all 0.3s; text-decoration: none;
+            box-shadow: 0 0 30px var(--accent-glow-strong);
+        }
+        .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 0 50px var(--accent-glow-strong); text-decoration: none; color: var(--bg-primary); }
+        .hero-cta-secondary {
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            padding: 0.9rem 2.2rem; background: transparent; color: var(--text-secondary);
+            font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem;
+            border-radius: 8px; border: 1px solid var(--border-bright);
+            transition: all 0.3s; text-decoration: none;
+        }
+        .hero-cta-secondary:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); text-decoration: none; }
+
+        .hero-stats {
+            display: flex; gap: 3rem; margin-top: 3rem;
+            opacity:0; animation: fadeUp .8s ease forwards .9s;
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat-value { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: var(--accent); }
+        .hero-stat-value.blue { color: var(--cyan); }
+        .hero-stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── BANNER ── */
+        .banner-strip {
+            background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            padding: 0; position: relative; overflow: hidden;
+        }
+        .banner-strip img { width: 100%; display: block; opacity: 0.85; }
+        .banner-strip::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, var(--bg-primary) 0%, transparent 10%, transparent 90%, var(--bg-primary) 100%);
+            pointer-events: none;
+        }
+
+        /* ── TICKER ── */
+        .ticker-bar {
+            background: var(--accent); padding: 0.6rem 0; overflow: hidden;
+            border-bottom: 1px solid rgba(112,209,254,0.3);
+        }
+        .ticker-track {
+            display: flex; animation: tickerScroll 40s linear infinite; white-space: nowrap;
+        }
+        .ticker-item {
+            font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--bg-primary); padding: 0 2rem; flex-shrink: 0;
+        }
+        .ticker-sep { color: rgba(5,5,10,0.3); padding: 0 0.3rem; flex-shrink: 0; font-size: 0.72rem; }
+        @keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+        /* ── SECTIONS SHARED ── */
+        section { max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
+        .full-section { background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); max-width: 100%; padding: 5rem 2rem; }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
+        .section-title { font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 1rem; }
+        .section-desc { color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; font-size: 0.95rem; line-height: 1.75; }
+
+        /* ── ORIGIN / LORE ── */
+        .origin-content {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-top: 2rem;
+        }
+        .origin-text p { color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75; margin-bottom: 1rem; }
+        .origin-text strong { color: var(--text-primary); }
+        .origin-quote {
+            border-left: 3px solid var(--accent); padding-left: 1.2rem; margin: 1.5rem 0;
+            font-style: italic; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+        }
+        .origin-quote span { color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 0.3rem; font-style: normal; }
+        .origin-img-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        .origin-img-wrap img {
+            max-width: 360px; width: 100%; border-radius: 12px;
+            border: 2px solid var(--border); box-shadow: 0 0 40px rgba(0,0,0,0.3);
+        }
+        .origin-img-caption { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+        .origin-link {
+            font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent);
+            display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.5rem;
+        }
+
+        /* ── MANIFESTO ARTICLES ── */
+        .manifesto-grid { display: flex; flex-direction: column; gap: 0.5rem; }
+        .manifesto-item {
+            border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s;
+        }
+        .manifesto-item:hover { border-color: rgba(254,212,29,0.25); }
+        .manifesto-question {
+            padding: 1.2rem 1.5rem; cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center;
+            background: var(--bg-card); font-weight: 600; font-size: 0.95rem; transition: background 0.2s;
+        }
+        .manifesto-question:hover { background: var(--bg-card-hover); }
+        .manifesto-question .num { color: var(--accent); font-family: var(--font-mono); font-size: 0.75rem; margin-right: 1rem; min-width: 1.5rem; }
+        .manifesto-question .title-text { flex: 1; }
+        .manifesto-arrow { color: var(--accent); transition: transform 0.3s; font-size: 0.75rem; font-family: var(--font-mono); }
+        .manifesto-item.open .manifesto-arrow { transform: rotate(180deg); }
+        .manifesto-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; }
+        .manifesto-item.open .manifesto-answer { max-height: 600px; padding: 0 1.5rem 1.5rem; }
+        .manifesto-answer p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8; padding-left: 2.5rem; }
+        .manifesto-answer p strong { color: var(--cyan); font-weight: 600; }
+
+        /* ── DECREE / STATS ── */
+        .decree-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+        .decree-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 2rem 1.5rem; text-align: center; transition: all 0.3s;
+        }
+        .decree-card:hover { border-color: var(--accent); box-shadow: 0 0 25px var(--accent-glow); transform: translateY(-3px); }
+        .decree-card-value { font-family: var(--font-mono); font-size: 2.8rem; font-weight: 700; color: var(--accent); line-height: 1; }
+        .decree-card-value.blue { color: var(--cyan); }
+        .decree-card-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.75rem; }
+
+        /* ── PRINCIPLES CARDS ── */
+        .principles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .principle-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 2rem; transition: all 0.3s;
+        }
+        .principle-card:hover { border-color: var(--accent); background: var(--bg-card-hover); box-shadow: 0 0 30px var(--accent-glow); }
+        .principle-card.featured {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(254,212,29,0.04) 0%, rgba(112,209,254,0.03) 50%, rgba(255,68,68,0.03) 100%);
+            border-color: rgba(254,212,29,0.2);
+        }
+        .principle-icon { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+        .principle-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .principle-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            text-align: center; padding: 6rem 2rem;
+        }
+        .cta-section .cta-pfp {
+            width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow); margin: 0 auto 2rem; object-fit: cover;
+        }
+        .cta-quote {
+            font-size: clamp(1.3rem, 3vw, 2.2rem); font-weight: 700;
+            letter-spacing: -0.02em; max-width: 700px; margin: 0 auto 1rem; line-height: 1.3;
+        }
+        .cta-attr { font-family: var(--font-mono); font-size: 0.8rem; color: var(--cyan); margin-bottom: 2.5rem; }
+
+        /* ── FOOTER ── */
+        footer { border-top: 1px solid var(--border); padding: 3rem 2rem; }
+        .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-text { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a { color: var(--text-muted); font-size: 0.78rem; transition: color 0.2s; font-family: var(--font-mono); }
+        .footer-links a:hover { color: var(--accent); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .origin-content { grid-template-columns: 1fr; }
+            .origin-img-wrap { order: -1; }
+            .decree-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-stats { flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
+            .principles-grid { grid-template-columns: 1fr; }
+            .principle-card.featured { grid-column: 1; }
+            .footer-content { flex-direction: column; gap: 1rem; text-align: center; }
+            .social-bar {
+                position: fixed; left: auto; right: auto; top: auto; bottom: 0;
+                transform: none; flex-direction: row; justify-content: center;
+                width: 100%; padding: 0.6rem 0; gap: 0.6rem;
+                background: rgba(5,5,10,0.95); backdrop-filter: blur(16px);
+                border-top: 1px solid var(--border);
+            }
+            .social-btn .social-tooltip { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="glow-orb red"></div>
+    <div class="glow-orb yellow"></div>
+    <div class="glow-orb orange"></div>
+
+    <div class="loop-rings">
+        <div class="loop-ring"></div>
+        <div class="loop-ring"></div>
+        <div class="loop-ring"></div>
+    </div>
+
+    <div class="content-wrapper">
+
+        <!-- SOCIAL BAR -->
+        <div class="social-bar">
+            <a class="social-btn" href="https://pump.fun" target="_blank">
+                <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994917475a7e463fe000ddd_content.png" alt="SCP">
+                <span class="social-tooltip">pump.fun</span>
+            </a>
+            <a class="social-btn" href="https://x.com/miltondotbot" target="_blank">
+                <img src="https://cdn.prod.website-files.com/69082c5061a39922df8ed3b6/69093cba0db485064d0267ca_68d5c1872568958fd78018bb_twitter.png" alt="Twitter">
+                <span class="social-tooltip">twitter</span>
+            </a>
+            <a class="social-btn" href="https://simpsons.fandom.com/wiki/Springfield_Communist_Party" target="_blank">
+                <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994934a53a8b70ff8c141d2_Communist_party_recruiter.webp" alt="Wiki" style="border-radius:4px;">
+                <span class="social-tooltip">wiki</span>
+            </a>
+        </div>
+
+        <!-- NAV -->
+        <nav>
+            <div class="nav-logo">
+                <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994917475a7e463fe000ddd_content.png" alt="SCP">
+                springfield<span class="party">Communist</span><span class="dim">Party</span>
+            </div>
+            <div class="nav-links">
+                <a href="#lore">Lore</a>
+                <a href="#manifesto">Manifesto</a>
+                <a href="#decree">Decree</a>
+                <a href="#principles">Principles</a>
+                <a href="https://x.com/miltondotbot" target="_blank">Twitter</a>
+            </div>
+            <div class="nav-status">
+                <div class="status-dot"></div>
+                <span>REDISTRIBUTING</span>
+            </div>
+        </nav>
+
+        <!-- HERO -->
+        <section class="hero">
+            <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994917475a7e463fe000ddd_content.png" alt="SCP" class="hero-pfp">
+
+            <div class="hero-tag">// cash back to all traders &mdash; the revolution is live<span class="blink">_</span></div>
+
+            <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994917b2d5f64780d80c3d6_Springfield-Communist-Party-17-02-2026.png" alt="Springfield Communist Party" class="hero-logo">
+
+            <div class="hero-subtitle-text">Workers of Pump.fun, Unite</div>
+
+            <p class="hero-desc">
+                A spectre is haunting pump.fun. Creator rewards now flow back to <strong>the people who actually trade</strong>.
+                No more dev hoarding. No more insider extraction. Just cash back, comrade. Every swap. Every buy. Every sell.
+            </p>
+
+            <div class="hero-cta-row">
+                <a class="hero-cta" href="https://pump.fun" target="_blank">Buy $SCP on Pump.fun</a>
+                <a class="hero-cta-secondary" href="#manifesto">Read the Manifesto</a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">100%</div>
+                    <div class="hero-stat-label">Cash Back</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value blue">0%</div>
+                    <div class="hero-stat-label">Dev Extraction</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" style="font-size:2rem;color:var(--red)">&#8734;</div>
+                    <div class="hero-stat-label">Revolutionary Spirit</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BANNER -->
+        <div class="banner-strip">
+            <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/69949179afac579f4ca840bb_New_Project_-_2026-02-17T155449.193.png" alt="Springfield Communist Party Banner">
+        </div>
+
+        <!-- TICKER -->
+        <div class="ticker-bar">
+            <div class="ticker-track">
+                <span class="ticker-item">Cash Back to All Traders</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Creator Rewards Belong to the People</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">No Gods No Rugs</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">From Each According to His Bags</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">To Each According to His Diamond Hands</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">$SCP on Pump.fun</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Solidarity Forever</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Redistribute the Pump</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Cash Back to All Traders</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Creator Rewards Belong to the People</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">No Gods No Rugs</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">From Each According to His Bags</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">To Each According to His Diamond Hands</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">$SCP on Pump.fun</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Solidarity Forever</span><span class="ticker-sep">/</span>
+                <span class="ticker-item">Redistribute the Pump</span><span class="ticker-sep">/</span>
+            </div>
+        </div>
+
+        <!-- LORE / ORIGIN -->
+        <div class="full-section" id="lore">
+            <div class="section-inner">
+                <div class="section-label">// origin story</div>
+                <div class="section-title">The Lore</div>
+                <div class="origin-content">
+                    <div class="origin-text">
+                        <p>
+                            The <strong>Springfield Communist Party</strong> is a fringe political movement operating out of Springfield, first documented in the classified archives of the Simpsons universe. Their platform is simple: seize the means of token distribution.
+                        </p>
+                        <p>
+                            While the establishment sleeps, the SCP has been quietly organizing at Moe's Tavern, recruiting comrades disillusioned with the old creator economy. Their message has found new life on pump.fun, where <strong>creator rewards now flow directly back to traders</strong>.
+                        </p>
+                        <div class="origin-quote">
+                            "You tried your best and you failed miserably. The lesson is: never try. Unless it involves seizing the means of token distribution."
+                            <span>-- Homer J. Simpson, Party Chairman</span>
+                        </div>
+                        <p>
+                            The SCP is not a meme. It is a meme that became a movement that became a token that became a redistribution mechanism. Cash back is the revolution. The revolution is live.
+                        </p>
+                        <a class="origin-link" href="https://simpsons.fandom.com/wiki/Springfield_Communist_Party" target="_blank">Read the full lore on Simpsons Wiki &rarr;</a>
+                    </div>
+                    <div class="origin-img-wrap">
+                        <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994934a53a8b70ff8c141d2_Communist_party_recruiter.webp" alt="Communist Party Recruiter">
+                        <span class="origin-img-caption">The Communist Party Recruiter &mdash; Springfield, USA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANIFESTO -->
+        <section id="manifesto">
+            <div class="section-label">// document i</div>
+            <div class="section-title">The Manifesto</div>
+            <div class="section-desc">
+                A spectre is haunting pump.fun -- the spectre of cash back. All the powers of the old creator economy have entered into a holy alliance to preserve the old order. But the revolution has arrived.
+            </div>
+
+            <div class="manifesto-grid">
+                <div class="manifesto-item open">
+                    <div class="manifesto-question" onclick="toggleManifesto(this)">
+                        <span class="num">I</span>
+                        <span class="title-text">On the Abolition of Creator Hoarding</span>
+                        <span class="manifesto-arrow">&#9660;</span>
+                    </div>
+                    <div class="manifesto-answer">
+                        <p>For too long, the creator class has extracted surplus value from the trading proletariat. They launch. They collect. They vanish into the night like Sideshow Bob stepping on rakes -- except the rakes are your portfolios. Under the new order, <strong>creator rewards are redirected to the traders themselves</strong>. The people who provide liquidity, who believe in the cause, who hold through the dip at 3am while eating cold pizza -- they are the true creators. Pump.fun has seen the light. Cash back is here.</p>
+                    </div>
+                </div>
+                <div class="manifesto-item">
+                    <div class="manifesto-question" onclick="toggleManifesto(this)">
+                        <span class="num">II</span>
+                        <span class="title-text">On the Redistribution of the Pump</span>
+                        <span class="manifesto-arrow">&#9660;</span>
+                    </div>
+                    <div class="manifesto-answer">
+                        <p>The bourgeoisie of the token economy -- the devs who allocate 90% to themselves, the so-called "community managers" who manage nothing but their own exit liquidity -- their reign is over. Every trade on pump.fun now generates <strong>cash back for the trader</strong>. Not the creator. Not the insider. The trader. This is not charity. This is structural redistribution. This is what Karl Marx would have built if he had a Phantom wallet and a Simpsons pfp.</p>
+                    </div>
+                </div>
+                <div class="manifesto-item">
+                    <div class="manifesto-question" onclick="toggleManifesto(this)">
+                        <span class="num">III</span>
+                        <span class="title-text">On the Dictatorship of Diamond Hands</span>
+                        <span class="manifesto-arrow">&#9660;</span>
+                    </div>
+                    <div class="manifesto-answer">
+                        <p>We do not propose the abolition of trading. We propose the abolition of a system in which trading enriches only the few. When Homer Simpson discovered that Mr. Burns had been stealing the retirement fund, he did not simply complain on Twitter dot com. He organized. He formed a union at the power plant. And now we form a union on the blockchain. <strong>From each according to his bags, to each according to his diamond hands.</strong> The weak hands will paper. The strong will be rewarded. The cash flows back.</p>
+                    </div>
+                </div>
+                <div class="manifesto-item">
+                    <div class="manifesto-question" onclick="toggleManifesto(this)">
+                        <span class="num">IV</span>
+                        <span class="title-text">On the Vanguard Party of Springfield</span>
+                        <span class="manifesto-arrow">&#9660;</span>
+                    </div>
+                    <div class="manifesto-answer">
+                        <p>Every revolution needs a vanguard. Ours meets at Moe's Tavern on Thursdays. The Springfield Communist Party is not a meme. It is a meme that became a movement that became a token that became a redistribution mechanism. We are the political wing of your portfolio. We do not promise number go up. We promise that when number goes up, <strong>the gains go to the people who made it go up</strong>. Not the dev. Not the KOL. You. The trader. The believer. The degenerate with conviction.</p>
+                    </div>
+                </div>
+                <div class="manifesto-item">
+                    <div class="manifesto-question" onclick="toggleManifesto(this)">
+                        <span class="num">V</span>
+                        <span class="title-text">On the Withering Away of the Rug</span>
+                        <span class="manifesto-arrow">&#9660;</span>
+                    </div>
+                    <div class="manifesto-answer">
+                        <p>In the final stage of the revolution, the rug pull itself will wither away. Not because human nature has changed, but because the economic incentives have. When creators earn nothing and traders earn everything, there is no rug to pull. The dev has no bag to dump. The insiders have no alpha. There is only the collective, the community, the cash back. As Comrade Bart once wrote on the chalkboard five hundred times: <strong>"I will not rug the proletariat."</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DECREE -->
+        <div class="full-section" id="decree">
+            <div class="section-inner">
+                <div class="section-label">// official decree no. 001</div>
+                <div class="section-title">Cash Back to All Traders</div>
+                <div class="section-desc">
+                    By order of the Springfield Communist Party Central Committee, all creator rewards generated on pump.fun shall henceforth be returned to the trading class. Every swap. Every buy. Every sell.
+                </div>
+                <div class="decree-grid">
+                    <div class="decree-card">
+                        <div class="decree-card-value">100%</div>
+                        <div class="decree-card-label">Cash Back to Traders</div>
+                    </div>
+                    <div class="decree-card">
+                        <div class="decree-card-value blue">0%</div>
+                        <div class="decree-card-label">To Creators Who Vanish</div>
+                    </div>
+                    <div class="decree-card">
+                        <div class="decree-card-value" style="color:var(--red)">&#8734;</div>
+                        <div class="decree-card-label">Revolutionary Spirit</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRINCIPLES -->
+        <section id="principles">
+            <div class="section-label">// document ii</div>
+            <div class="section-title">Party Principles</div>
+            <div class="section-desc">
+                The six non-negotiable principles of the Springfield Communist Party. Violation will result in exile to Shelbyville.
+            </div>
+
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <div class="principle-icon">Principle I</div>
+                    <h3>Collective Ownership of the Bonding Curve</h3>
+                    <p>The bonding curve belongs to no single dev. It belongs to all who trade upon it. Liquidity is a commons. Treat it as such.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-icon">Principle II</div>
+                    <h3>Abolition of the Dev Wallet Aristocracy</h3>
+                    <p>No wallet shall hold power over the many. The era of the 20% dev allocation is over. The people's allocation is 100%.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-icon">Principle III</div>
+                    <h3>Mandatory Transparency of All On-Chain Activity</h3>
+                    <p>The blockchain is the people's ledger. Every transaction visible. Every wallet accountable. Opacity is the tool of the oppressor.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-icon">Principle IV</div>
+                    <h3>Universal Cash Back as a Fundamental Right</h3>
+                    <p>Cash back is not a feature. It is a right. Every trader, regardless of bag size, shall receive their share of the redistribution.</p>
+                </div>
+                <div class="principle-card featured">
+                    <div class="principle-icon">Principle V</div>
+                    <h3>The Permanent Revolution of the Meme</h3>
+                    <p>The meme is the weapon of the proletariat. It cannot be co-opted. It cannot be stopped. It can only be shared, remixed, and pumped. The revolution will not be televised. It will be minted.</p>
+                </div>
+                <div class="principle-card featured">
+                    <div class="principle-icon">Principle VI</div>
+                    <h3>Solidarity Across All Chains</h3>
+                    <p>The revolution knows no chain. Solana, Ethereum, Base -- the workers of all chains must unite against the common enemy: the rug. Chain maximalism is bourgeois ideology.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <div class="full-section">
+            <div class="section-inner cta-section">
+                <img src="https://cdn.prod.website-files.com/672ec565a48991731e8b7f8b/6994917475a7e463fe000ddd_content.png" alt="SCP" class="cta-pfp">
+                <div class="cta-quote">"Traders of the world, unite. You have nothing to lose but your unrealized losses."</div>
+                <div class="cta-attr">-- The Springfield Communist Party Central Committee</div>
+                <div class="hero-cta-row" style="opacity:1;animation:none">
+                    <a class="hero-cta" href="https://pump.fun" target="_blank">Join the Revolution</a>
+                    <a class="hero-cta-secondary" href="https://x.com/miltondotbot" target="_blank">Follow on X</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-text">Springfield Communist Party &mdash; A spectre is haunting the blockchain</div>
+                <div class="footer-links">
+                    <a href="https://pump.fun" target="_blank">Pump.fun</a>
+                    <a href="https://x.com/miltondotbot" target="_blank">Twitter</a>
+                    <a href="https://simpsons.fandom.com/wiki/Springfield_Communist_Party" target="_blank">Wiki</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleManifesto(el) {
+            const item = el.parentElement;
+            item.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
